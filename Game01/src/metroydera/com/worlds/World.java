@@ -69,8 +69,6 @@ public class World {
 				}else if (pixelAtual == 0xFFFF00FF){
 					//gate
 					tiles[xx + (yy * WIDTH)] = new Gate(xx*16, yy*16, Tile.TILE_GATE);
-					
-					if(Game.player.getX() && Game.player.getY() == this)
 				}else if (pixelAtual == 0xFF6100FF){
 					//gatewall
 					tiles[xx + (yy * WIDTH)] = new Gate(xx*16, yy*16, Tile.TILE_GATE_WALL);
