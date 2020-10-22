@@ -18,7 +18,7 @@ public class Enemy extends Entity{
 	private int maskX = 8 , maskY = 8 , maskW = 10 , maskH = 10 ;
 	
 	private int  frames =  0 , maxFrames = 15 , index = 0 , maxIndex = 1;
-	private int life = 10;
+	public int life = 10;
 	
 	private boolean isDamaged = false;
 	private int damageFrames = 10 , damageCurrent = 0;
@@ -96,11 +96,12 @@ public class Enemy extends Entity{
 					Player.maxLife+=15;
 					Player.minDamage++;
 					Player.life = Player.maxLife;
-					System.out.println("Level : " + Player.level);
-					System.out.println("MinDamage : " +Player.minDamage);
-					System.out.println("MaxDamage : " + Player.maxDamage);
+					//System.out.println("Level : " + Player.level);
+					//System.out.println("MinDamage : " +Player.minDamage);
+					//System.out.println("MaxDamage : " + Player.maxDamage);
 					Player.xpMaxNextLevel = Player.xpMaxNextLevel * 2;
 					Player.xpNextlevel = 0;
+					Player.hasGun = true;
 					
 					
 				}

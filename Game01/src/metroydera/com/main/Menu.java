@@ -83,8 +83,8 @@ public class Menu {
 				Game.player.life = Integer.parseInt(spl2[1]);
 				break;
 			}
-			}
 		}
+	}
 		
 	
 	
@@ -149,6 +149,7 @@ public class Menu {
 			} catch (IOException e) {
 		}
 	}
+	
 	
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;

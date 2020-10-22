@@ -26,6 +26,9 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 
+
+
+
 public class Game extends Canvas implements Runnable , KeyListener , MouseListener{
 	
 	private static final long serialVersionUID = 1L;
@@ -37,8 +40,8 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 	public static final int SCALE = 3;
 	private BufferedImage image;
 	public static BufferedImage minimap;
-	private int CUR_LEVEL = 1;
-	private int MAX_LEVEL = 2;
+	public static int CUR_LEVEL = 1;
+	public static int  MAX_LEVEL = 2;
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
 	public static List<BulletShoot> bullets;
@@ -48,6 +51,8 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 	public static Random rand;
 	public UI ui;
 	public Menu menu;
+	public Items items;
+	public Inventory inventory;
 	public static String gameState = "MENU";
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0; 
@@ -60,6 +65,7 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		rand = new Random();
 		addKeyListener(this);
 		addMouseListener(this);
+		//setPreferredSize(new Dimension(java.awt.Toolkit.getDefaultToolkit().getScreenSize()));
 		setPreferredSize(new Dimension(WIDHT*SCALE, HEIGHT*SCALE));
 		initFrame();
 		//inicializando objetos
@@ -68,12 +74,15 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		image = new BufferedImage(WIDHT, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
-		bullets = new ArrayList<BulletShoot>();
-
+		bullets = new ArrayList<BulletShoot>();	
+		
+		inventory = new Inventory();
+		items = new Items();
+		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
-		world = new World("/level1.png");
+		world = new World("/level1.png");;
 		
 		minimap  = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		minimapPixels = ((DataBufferInt)minimap.getRaster().getDataBuffer()).getData();
@@ -81,14 +90,15 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		
 		
 		menu = new Menu();
-		//menu.tick();
-		
+		menu.tick();
+	
 		
 	}
 	
 	public void initFrame() {
-		frame = new JFrame("Meu Jogo");
+		frame = new JFrame("Metroydera");
 		frame.add(this);
+		//frame.setUndecorated(true);
 		frame.setResizable(false);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
@@ -134,27 +144,16 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 			}
 		this.restartGame = false;
 		for(int i = 0 ; i < entities.size(); i++) {
-			Entity e = entities.get(i);			
+			Entity e = entities.get(i);	
 			e.tick();
+			
 		}
 		
 		for(int i = 0 ; i < bullets.size(); i++) {
 			bullets.get(i).tick();
 		}
 		
-		//CARREGAR NOVO MAPA AO MATAR TODOS OS MOB
 		
-		if(enemies.size() == 0) {
-			//proximo level
-			CUR_LEVEL++;
-			if(CUR_LEVEL > MAX_LEVEL) {
-				CUR_LEVEL = 1;
-			}
-			
-			String newWorld = "Level"+CUR_LEVEL+".png";
-			//System.out.println(newWorld);
-			World.restartGame(newWorld);
-		}
 		}else if(gameState == "GAME_OVER") {
 			this.framesGameOver++;
 			if(this.framesGameOver > 25) {
@@ -176,9 +175,29 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 			}
 		}else if(gameState == "MENU") {
 			menu.tick();
+		}else if(gameState == "PAUSE") {
+			menu.tick();
+			inventory.tick();
+		}
+		
+		//CARREGAR NOVO MAPA AO MATAR TODOS OS MOB
+		
+		if(enemies.size() == 0) {
+			//proximo level
+			CUR_LEVEL++;
+			if(CUR_LEVEL >= 7) {
+				CUR_LEVEL = 1;
+				
+			}
+			
+		String newWorld = "Level"+CUR_LEVEL+".png";
+		System.out.println(newWorld);
+		World.restartGame(newWorld);
 		}
 
 	}
+	
+	
 	
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
@@ -205,9 +224,12 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		
 		ui.render(g);
 		
+		 
 		g.dispose();
 		g = bs.getDrawGraphics();
-		g.drawImage(image, 0, 0, WIDHT*SCALE, HEIGHT*SCALE, null);
+		g.drawImage(image, 0, 0, WIDHT * SCALE, HEIGHT * SCALE, null);
+		//g.drawImage(image, 0, 0, java.awt.Toolkit.getDefaultToolkit().getScreenSize().width, 
+		//		    java.awt.Toolkit.getDefaultToolkit().getScreenSize().height,null);
 		g.setFont(new Font("arial" , Font.BOLD, 16));
 		g.setColor(Color.white);
 		g.drawString("Ammo " + Player.ammo, 600, 30);
@@ -222,6 +244,10 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 				g.drawString(">Pressione enter para reiniciar<", 150 , 250);
 		}else if(gameState == "MENU") {
 				menu.render(g);
+				inventory.render(g);
+				
+			}else if(gameState == "PAUSE") {
+				inventory.render(g);
 			}
 		World.renderMiniMap();
 		g.drawImage(minimap , 615,375,World.HEIGHT * 5 , World.HEIGHT * 5, null);
@@ -310,6 +336,8 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			gameState = "MENU";
 			menu.pause = true;
+
+			
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {

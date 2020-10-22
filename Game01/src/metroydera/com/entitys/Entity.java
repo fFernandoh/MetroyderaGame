@@ -12,8 +12,8 @@ public class Entity {
 	public static BufferedImage WEAPON_EN = Game.spritesheet.getSprite(7*16, 0, 16, 16);
 	public static BufferedImage BULLET_EN = Game.spritesheet.getSprite(6*16, 16, 16, 16);
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(7*16, 16, 16, 16);
-	//public static BufferedImage ENEMY_BOSS01 = Game.spritesheet.getSprite(7*16, 32, 16, 16);
-	//public static BufferedImage ENEMY_BOSS01_FEEDBACK = Game.spritesheet.getSprite(9*16, 32, 16, 16);
+	public static BufferedImage GATE_LEVEL01 = Game.spritesheet.getSprite(0, 16, 16, 16);
+	public static BufferedImage GATE_WALL_LEVEL01 = Game.spritesheet.getSprite(16, 16, 16, 16);
 	public static BufferedImage ENEMY_FEEDBACK = Game.spritesheet.getSprite(9*16, 16, 16, 16);
 	public static BufferedImage WEAPON_RIGHT = Game.spritesheet.getSprite(7*16, 0, 16, 16);
 	public static BufferedImage WEAPON_LEFT = Game.spritesheet.getSprite(9*16, 0, 16, 16);

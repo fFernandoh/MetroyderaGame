@@ -1,15 +1,15 @@
-- artes para o jogo /Sprites.
-- pause , game over e start menu;
-- sistema de animação para o player;
-- controle do jogo pelo teclado;
-- sistema para shooting;
-- sistema para criação de mapa;
+- artes para o jogo /Sprites. ok
+- pause , game over e start menu; ok
+- sistema de animação para o player; ok
+- controle do jogo pelo teclado; ok
+- sistema para shooting; ok
+- sistema para criação de mapa; ok
 - sistema de vários leveis;
-- inimigos;
+- inimigos; ok
 - boss battle;
-- coletar itens;
+- coletar itens; ok
 - aumentar ataque ou defesa de acordo com item;
-- sistema de dano;
-- sistema para salvar o jogo e carregar;
+- sistema de dano; ok
+- sistema para salvar o jogo e carregar; ok
 - audio musica (para o final);
 

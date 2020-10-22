@@ -3,6 +3,7 @@ package metroydera.com.entitys;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import metroydera.com.main.Game;
+import metroydera.com.main.Inventory;
 import metroydera.com.worlds.Camera;
 import metroydera.com.worlds.World;
 
@@ -16,21 +17,21 @@ public class Player extends Entity{
 	private int frames = 0 , maxframes = 5 , index = 0 , maxIndex = 3;
 	private boolean moved = false;
 	
-	public static double life =  100000;
-	public static double maxLife =  100000;
+	public static double life =  100;
+	public static double maxLife =  100;
 	public static int level = 1;
 	public static int xpNextlevel = 1;
 	public static int xpMaxNextLevel = 100;
 	public static int minDamage = 2;
 	public static int maxDamage = minDamage * 5;
 	public int mx , my;
-	
+
 	public static int ammo = 0;
 	
 	public boolean isDamaged = false;
 	private int damagedFrames = 0;
 	
-	private boolean hasGun = false;
+	public static boolean hasGun = false;
 	public boolean shoot = false;
 	public boolean mouseShoot = false;
 	
@@ -87,6 +88,7 @@ public class Player extends Entity{
 		checkCollisionLifePack();
 		checkCollisionAmmo();
 		checkCollisionWeapon();
+		//checkCollisionDoor();
 		
 		if(isDamaged) {
 			this.damagedFrames++;
@@ -151,11 +153,7 @@ public class Player extends Entity{
 		if(life <= 0) {
 			life = 0;
 			Game.gameState = "GAME_OVER";
-		}
-		
-		//Camera seguindo o player centralizado
-		//sistema de clamp (camera não aparece mais as laterais preta)
-		
+		}		
 		updateCamera();
 		
 	}
@@ -195,8 +193,7 @@ public class Player extends Entity{
 					life+= 8;
 					
 					if(life >= maxLife) 
-						life = maxLife;
-					
+						life = maxLife;					
 					Game.entities.remove(atual);
 					return;
 				}
@@ -211,7 +208,6 @@ public class Player extends Entity{
 			if(atual instanceof Weapon) {
 				if(Entity.isColidding(this, atual)) {
 					hasGun = true;
-					//System.out.println("pegou arma");
 					Game.entities.remove(atual);
 					return;
 				}
@@ -222,15 +218,23 @@ public class Player extends Entity{
 	public void checkCollisionAmmo() {
 		for (int i = 0; i < Game.entities.size(); i++) {
 			Entity atual = Game.entities.get(i);
+			Items item = new Items();
 			
 			if(atual instanceof Bullet) {
 				if(Entity.isColidding(this, atual)) {
 					ammo+=1000;
+					Items.items.add(this);
+					//System.out.println(Items.items.get(i));
+					
 					Game.entities.remove(atual);
 					return;
 				}
 			}
 		}
 	}
+	
+
+
+	
 
 }

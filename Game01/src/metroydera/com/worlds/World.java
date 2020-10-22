@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 import metroydera.com.entitys.Bullet;
 import metroydera.com.entitys.Enemy;
 import metroydera.com.entitys.Entity;
+import metroydera.com.entitys.Gate;
+import metroydera.com.entitys.GateWall;
 import metroydera.com.entitys.Lifepack;
 import metroydera.com.entitys.Player;
 import metroydera.com.entitys.Weapon;
@@ -56,6 +58,7 @@ public class World {
 					Enemy en = new Enemy(xx*16,yy*16,16,16,Entity.ENEMY_EN);
 					Game.entities.add(en);
 					Game.enemies.add(en);
+					
 				}else if(pixelAtual == 0xFFFF006E) {
 					Game.entities.add(new Weapon(xx*16, yy*16, 16 ,16 , Entity.WEAPON_EN));
 					//weapow
@@ -67,11 +70,11 @@ public class World {
 					Game.entities.add(new Bullet(xx*16, yy*16, 16 ,16 , Entity.BULLET_EN));
 					//bullet
 				}else if (pixelAtual == 0xFFFF00FF){
-					//gate
-					tiles[xx + (yy * WIDTH)] = new Gate(xx*16, yy*16, Tile.TILE_GATE);
+					//gatewall lvl 01
+					Game.entities.add(new Gate(xx*16, yy*16, 16 ,16 , Entity.GATE_WALL_LEVEL01));
 				}else if (pixelAtual == 0xFF6100FF){
-					//gatewall
-					tiles[xx + (yy * WIDTH)] = new Gate(xx*16, yy*16, Tile.TILE_GATE_WALL);
+					//gate
+					Game.entities.add(new GateWall(xx*16, yy*16, 16, 16, Entity.GATE_LEVEL01));
 				}
 			}
 		}
@@ -165,6 +168,7 @@ public class World {
 		int yPlayer = Game.player.getY() / 16;
 		 
 		Game.minimapPixels[xPlayer + (yPlayer*WIDTH)] = 0xFFD800;
+		
 		
 	}
 }
