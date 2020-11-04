@@ -2,8 +2,8 @@ package metroydera.com.entitys;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
 import metroydera.com.main.Game;
-import metroydera.com.main.Inventory;
 import metroydera.com.worlds.Camera;
 import metroydera.com.worlds.World;
 
@@ -37,6 +37,7 @@ public class Player extends Entity{
 	
 	private BufferedImage[] rightPlayer;
 	private BufferedImage[] leftPlayer;
+	
 	
 	private BufferedImage playerDamaged;
 
@@ -88,7 +89,6 @@ public class Player extends Entity{
 		checkCollisionLifePack();
 		checkCollisionAmmo();
 		checkCollisionWeapon();
-		//checkCollisionDoor();
 		
 		if(isDamaged) {
 			this.damagedFrames++;
@@ -126,6 +126,11 @@ public class Player extends Entity{
 			
 			if(hasGun && ammo > 0) {
 				ammo --;
+				if(ammo <= 0) {
+					System.out.println("Acabou as balas");
+					ammo = 0;
+					
+				}
 				
 
 				int px = 0;
@@ -190,8 +195,8 @@ public class Player extends Entity{
 			
 			if(atual instanceof Lifepack) {
 				if(Entity.isColidding(this, atual)) {
-					life+= 8;
-					
+					//life+= 8;
+					Game.lifepacks += 1;
 					if(life >= maxLife) 
 						life = maxLife;					
 					Game.entities.remove(atual);
@@ -215,22 +220,19 @@ public class Player extends Entity{
 		}
 	}
 	
+	
 	public void checkCollisionAmmo() {
 		for (int i = 0; i < Game.entities.size(); i++) {
 			Entity atual = Game.entities.get(i);
-			Items item = new Items();
-			
 			if(atual instanceof Bullet) {
 				if(Entity.isColidding(this, atual)) {
-					ammo+=1000;
-					Items.items.add(this);
-					//System.out.println(Items.items.get(i));
-					
+					ammo+=10;	
 					Game.entities.remove(atual);
+					
 					return;
 				}
 			}
-		}
+		}	
 	}
 	
 

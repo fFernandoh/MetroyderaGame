@@ -17,8 +17,11 @@ public class Entity {
 	public static BufferedImage ENEMY_FEEDBACK = Game.spritesheet.getSprite(9*16, 16, 16, 16);
 	public static BufferedImage WEAPON_RIGHT = Game.spritesheet.getSprite(7*16, 0, 16, 16);
 	public static BufferedImage WEAPON_LEFT = Game.spritesheet.getSprite(9*16, 0, 16, 16);
-	
-	private int  maskX, maskY , mWidth , mHeight;
+
+	public int  maskX;
+	public int maskY;
+	public int mWidth;
+	public int mHeight;
 	
 	protected double x;
 	protected double y;
@@ -81,8 +84,8 @@ public class Entity {
 	}
 	
 	public void tick() {
-		
-	}
+
+		}	
 	
 	public static boolean isColidding(Entity e1 , Entity e2) {
 		Rectangle e1Mask = new Rectangle(e1.getX() + e1.maskX, e1.getY() + e1.maskY, e1.mWidth , e1.mHeight);

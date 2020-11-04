@@ -1,6 +1,7 @@
 package metroydera.com.entitys;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -18,14 +19,19 @@ public class Enemy extends Entity{
 	private int maskX = 8 , maskY = 8 , maskW = 10 , maskH = 10 ;
 	
 	private int  frames =  0 , maxFrames = 15 , index = 0 , maxIndex = 1;
-	public int life = 10;
+	public int maxLife = 10;
+	public int currentLife = 10;
 	
 	private boolean isDamaged = false;
 	private int damageFrames = 10 , damageCurrent = 0;
 	private int exp = 10;
+	public int enemyFeedbackDamage = 0;
+	public int delay = 1000;
+	public int interval = 5000;
 	private BufferedImage image;
 
 	private BufferedImage[] sprites;
+	
 	
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, null);
@@ -84,11 +90,11 @@ public class Enemy extends Entity{
 			
 			collidingBullet();
 		
-			if(life <= 0) {
+			if(currentLife <= 0) {
 				Player.xpNextlevel += 70;
 				destroySelf();
 				
-				System.out.println("XP " + Player.xpNextlevel+"/"+Player.xpMaxNextLevel);
+				//System.out.println("XP " + Player.xpNextlevel+"/"+Player.xpMaxNextLevel);
 				
 				
 				if(Player.xpNextlevel >= Player.xpMaxNextLevel) {
@@ -122,8 +128,8 @@ public class Enemy extends Entity{
 		Game.enemies.remove(this);
 		Game.entities.remove(this);
 	}
-	
-	
+		
+
 	public void collidingBullet() {
 		image = new BufferedImage(Game.HEIGHT, Game.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics g = image.getGraphics();
@@ -135,15 +141,16 @@ public class Enemy extends Entity{
 					
 					Random rand = new Random();
 					int nextDamage = Player.level * rand.nextInt(Player.maxDamage);
-					System.out.println("dano : " + nextDamage);
+					//System.out.println("dano : " + nextDamage);
 					
 					if(nextDamage == Player.maxDamage) {
 						nextDamage = Player.maxDamage * 2;
-						System.out.println("dano critico : " + nextDamage);
+						//System.out.println("dano critico : " + nextDamage);
 					}
 					isDamaged = true;
-					life = life - (int)nextDamage;
+					currentLife -=  (int)nextDamage;
 					Game.bullets.remove(i);
+					enemyFeedbackDamage = nextDamage;
 				
 					return;
 				}
@@ -182,9 +189,11 @@ public class Enemy extends Entity{
 		if(!isDamaged) {
 			g.drawImage(sprites[index], this.getX()  - Camera.x, this.getY() - Camera.y , null);
 		}else {
-		g.drawImage(Entity.ENEMY_FEEDBACK, this.getX()  - Camera.x, this.getY() - Camera.y , null);
-		//g.setColor(Color.blue);
-		//g.fillRect(this.getX() + maskY - Camera.x, this.getY() + maskY - Camera.y, maskW, maskH);
-	}
+			g.drawImage(Entity.ENEMY_FEEDBACK, this.getX()  - Camera.x, this.getY() - Camera.y , null);
+			g.setColor(Color.red);
+			g.setFont(new Font("arial" , Font.BOLD, 10));
+			g.drawString("" + enemyFeedbackDamage, this.getX() - Camera.x, this.getY() - Camera.y);
+
+		}
 	}
 }

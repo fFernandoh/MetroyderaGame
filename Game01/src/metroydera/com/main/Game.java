@@ -3,7 +3,6 @@ package metroydera.com.main;
 import metroydera.com.entitys.*;
 import metroydera.com.graphics.Spritesheet;
 import metroydera.com.graphics.UI;
-import metroydera.com.worlds.Camera;
 import metroydera.com.worlds.World;
 
 import java.awt.Canvas;
@@ -29,7 +28,10 @@ import javax.swing.JFrame;
 
 
 
+
+
 public class Game extends Canvas implements Runnable , KeyListener , MouseListener{
+	
 	
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
@@ -49,16 +51,17 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 	public static Player player;
 	public static World world;
 	public static Random rand;
+	public static Inventory inventory;
 	public UI ui;
 	public Menu menu;
-	public Items items;
-	public Inventory inventory;
+	
 	public static String gameState = "MENU";
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0; 
 	private boolean restartGame = false;
 	public boolean saveGame = false;
 	public static int[] minimapPixels;
+	public static int lifepacks = 10;
 	
 	public Game() {
 		
@@ -71,23 +74,19 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		//inicializando objetos
 		
 		ui = new UI();
+		inventory = new Inventory();
 		image = new BufferedImage(WIDHT, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
 		bullets = new ArrayList<BulletShoot>();	
 		
-		inventory = new Inventory();
-		items = new Items();
-		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
-		world = new World("/level1.png");;
+		world = new World("/level1.png");
 		
 		minimap  = new BufferedImage(World.WIDTH, World.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		minimapPixels = ((DataBufferInt)minimap.getRaster().getDataBuffer()).getData();
-		
-		
 		
 		menu = new Menu();
 		menu.tick();
@@ -149,9 +148,12 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 			
 		}
 		
+		inventory.tick();
+		
 		for(int i = 0 ; i < bullets.size(); i++) {
 			bullets.get(i).tick();
 		}
+		
 		
 		
 		}else if(gameState == "GAME_OVER") {
@@ -177,7 +179,7 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 			menu.tick();
 		}else if(gameState == "PAUSE") {
 			menu.tick();
-			inventory.tick();
+			//inventory.tick();
 		}
 		
 		//CARREGAR NOVO MAPA AO MATAR TODOS OS MOB
@@ -222,6 +224,7 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 			bullets.get(i).render(g);
 		}
 		
+		
 		ui.render(g);
 		
 		 
@@ -230,9 +233,9 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 		g.drawImage(image, 0, 0, WIDHT * SCALE, HEIGHT * SCALE, null);
 		//g.drawImage(image, 0, 0, java.awt.Toolkit.getDefaultToolkit().getScreenSize().width, 
 		//		    java.awt.Toolkit.getDefaultToolkit().getScreenSize().height,null);
-		g.setFont(new Font("arial" , Font.BOLD, 16));
-		g.setColor(Color.white);
-		g.drawString("Ammo " + Player.ammo, 600, 30);
+		//g.setFont(new Font("arial" , Font.BOLD, 16));
+		//g.setColor(Color.white);
+		//g.drawString("Ammo " + Player.ammo, 600, 30);
 		if(gameState == "GAME_OVER") {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(new Color(0,0,0, 100));
@@ -244,13 +247,14 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 				g.drawString(">Pressione enter para reiniciar<", 150 , 250);
 		}else if(gameState == "MENU") {
 				menu.render(g);
-				inventory.render(g);
+				//inventory.render(g);
 				
 			}else if(gameState == "PAUSE") {
-				inventory.render(g);
+				//inventory.render(g);
 			}
 		World.renderMiniMap();
 		g.drawImage(minimap , 615,375,World.HEIGHT * 5 , World.HEIGHT * 5, null);
+		inventory.render(g);
 		bs.show();
 		
 	}
@@ -322,6 +326,24 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 			
 		}
 		
+		if(e.getKeyCode() == KeyEvent.VK_1) {
+			if(lifepacks > 0) {
+				if(Player.life == Player.maxLife) {
+					System.out.println("Seu life já está cheio");
+				}else {					
+					Player.life += 8;
+					lifepacks--;		
+					System.out.println("Curou 8 de vida");
+					if(Player.life > Player.maxLife) {
+						Player.life = Player.maxLife;
+					}
+				}				
+			}
+		}
+				
+			
+		
+		
 		if(e.getKeyCode() == KeyEvent.VK_X) {
 			player.shoot = true;
 		}
@@ -374,7 +396,9 @@ public class Game extends Canvas implements Runnable , KeyListener , MouseListen
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		inventory.isPressed = true;
+		inventory.mx = e.getX();
+		inventory.my = e.getY();
 		
 	}
 
